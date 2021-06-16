@@ -1,0 +1,4 @@
+#!/bin/bash
+# launch vscape launcher
+
+java -jar ~/Games/vidyascape_launcher.jar
