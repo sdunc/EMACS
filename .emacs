@@ -1,92 +1,78 @@
-;; Cosmetic
-(setq inhibit-startup-message t) ; Disable splash screen
-(tool-bar-mode -1)   ; Remove toolbar
-; Remove eink for now
-(load-theme 'eink t) ; Load color theme
-(god-mode)
-; Change cusor and modeline color when in god-mode
-(defun my-god-mode-color-indicator ()
-  (if god-local-mode
-      (progn (set-cursor-color "#F8E5AD") (set-face-background 'mode-line "#F8E5AD"))
-    (progn (set-cursor-color "#e0dace") (set-face-background 'mode-line "#e0dace"))))
+;; Stephen Duncanson
+;; GNU Emacs Configuration File
 
+; enable line numbers when doing any programming
+(add-hook 'prog-mode-hook #'display-line-numbers-mode)
+
+
+(type-break-mode)
+;; god-mode
+(god-mode)
+(global-set-key (kbd "<escape>") #'god-mode-all) ; bind ESC to toggle god-mode
+(setq god-exempt-major-modes nil)
+(setq god-exempt-predicates nil)
+(define-key god-local-mode-map (kbd ".") #'repeat)
+(define-key god-local-mode-map (kbd "i") #'god-mode)
+(global-set-key (kbd "C-x C-1") #'delete-other-windows)
+(global-set-key (kbd "C-x C-2") #'split-window-below)
+(global-set-key (kbd "C-x C-3") #'split-window-right)
+(global-set-key (kbd "C-x C-0") #'delete-window)
+(global-set-key (kbd "C-x C-o") #'other-window)
+(global-set-key (kbd "C-x C-b") #'switch-to-buffer)
+;(global-set-key (kbd "C-w") #'previous-line)
+;(global-set-key (kbd "C-a") #'left-char)
+;(global-set-key (kbd "C-s") #'next-line)
+;(global-set-key (kbd "C-d") #'right-char)
+;(global-set-key (kbd "C-q") #'beginning-of-line)
+(global-set-key (kbd "C-z") #'goto-line)
+(global-set-key (kbd "C-t") #'query-replace)
+(global-set-key (kbd "C-x C-k") #'kill-buffer)
+(global-set-key (kbd "C-x C-b") #'buffer-menu-other-window)
+
+(defun steph-god-mode-color-indicator ()
+  "Toggles the color of the cursor and modeline to reflect whether god-mode is active."
+  (let ((god-color "goldenrod")
+	(normal-color "#eeeeee")
+	(cursor-color "#eeeeee"))
+    (if god-local-mode
+	(progn (set-cursor-color god-color) (set-face-background 'mode-line god-color))
+      (progn (set-cursor-color cursor-color) (set-face-background 'mode-line normal-color)))))
 
 ; Add hooks so function is executed on mode change  
-(add-hook 'god-mode-enabled-hook #'my-god-mode-color-indicator)
-(add-hook 'god-mode-disabled-hook #'my-god-mode-color-indicator)
-
-
-; Code for making mit-scheme (sicp) work on vanilla emacs with
-(set-variable (quote scheme-program-name) "Racket -I sicp")
-(add-to-list 'auto-mode-alist '("\\.rkt\\'" . scheme-mode))
+(add-hook 'god-mode-enabled-hook #'steph-god-mode-color-indicator)
+(add-hook 'god-mode-disabled-hook #'steph-god-mode-color-indicator)
 
 
 
-; for eval'in a whole buffer using my scheme hack. wip.
-;(add-hook 'scheme-mode-hook
-;	  (lambda ()
-;	    (local-set-key (kbd "C-x C-r") #'steph-eval-scheme-buffer)))
-;
-;(defun steph-eval-scheme-buffer ()
-;  ())
+;; movement changes
+(setq scroll-error-top-bottom 'true)
+(setq next-line-add-newlines t)
+
+;; Fix python..?
+(setq python-shell-interpreter "/usr/bin/python3")
+ (defun python-reinstate-current-directory ()
+   ;;   "When running Python, add the current directory ('') to the head of sys.path.
+   ;; For reasons unexplained, run-python passes arguments to the
+   ;; interpreter that explicitly remove '' from sys.path. This means
+   ;; that, for example, using `python-send-buffer' in a buffer
+   ;; visiting a module's code will fail to find other modules in the
+   ;; same directory.
+   ;; Adding this function to `inferior-python-mode-hook' reinstates
+   ;; the current directory in Python's search path."
+   (python-send-string "sys.path[0:0] = ['']"))
+(add-hook 'inferior-python-mode-hook 'python-reinstate-current-directory)
 
 
-
-; Define some changes to the eink theme
-(setq custom--inhibit-theme-enable nil) ; unsure if needed? read online it was needed.
-(custom-theme-set-faces 'eink
-			'(show-paren-match ((t :foreground "black" :weight bold :background "#ddddd8")))
-			'(mode-line ((t (:height 0.9 :background "#dfd9cb"))))
-			'(mode-line-inactive ((t (:height 0.9 :background "#efece6" ))))
-			'(fringe ((t :background "#efece7" :foreground "#ffffff")))
-					; add more changes here
-			);
-
-
-
-
-
-
-
-
-					; Set the scratch buffer message!
+;; cosmetic 
+(setq inhibit-startup-message t) ; Disable splash screen
+(tool-bar-mode -1)   ; Remove toolbar
+(setq visible-bell t) ; Instead of ringing the system bell, flash screen
+(scroll-bar-mode 0)
+(menu-bar-mode 0)
 (setq initial-scratch-message "\
 ;; Welcome to Stephen's EMACS
 ;; This buffer is for notes you don't want to save, and for Lisp evaluation.
-;; In god-mode all keys are prefix'd with C-, so x -> C-x.
-;; Hitting g is equivalent to M-, so g x -> M-x.
-;; SPC breaks the C- prefix. So: x SPC s -> C-x s
-;; '.' repeats the previous command.
 ")
-
-; personal functions w/o hotkeys
-; This needs work
-;(defun r-parallel (res)
-;  (defun inverse (x)
-;    (/ 1.0 x))
-;  (inverse (apply '+ (mapcar 'inverse res))))
-
-
-; Line Numbers, except in certain major modes
-(require 'display-line-numbers)
-(defcustom display-line-numbers-exempt-modes '(vterm-mode eshell-mode shell-mode term-mode ansi-term-mode)
-  "Major modes on which to disable the linum mode, exempts them from global requirement"
-  :group 'display-line-numbers
-  :type 'list
-  :version "green")
-
-(defun display-line-numbers--turn-on ()
-  "turn on line numbers but excempting certain majore modes defined in `display-line-numbers-exempt-modes'"
-  (if (and
-       (not (member major-mode display-line-numbers-exempt-modes))
-       (not (minibufferp)))
-      (display-line-numbers-mode)))
-(global-display-line-numbers-mode)
-
-;; General Hooks
-(add-hook 'emacs-lisp-mode-hook 'rainbow-mode) ; for .emacs edits
-(add-hook 'TeX-mode-hook 'flyspell-mode) ; for papers
-(add-hook 'LaTeX-mode-hook '(flyspell-mode t)) ; also for papers
 
 ;; Package manager (MELPA)
 (require 'package)
@@ -94,49 +80,19 @@
 (add-to-list 'package-archives
 	     '("melpa" . "https://melpa.org/packages/"))
 (package-initialize)
-
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
-
-
-(use-package god-mode
-  :ensure t)
-(use-package rainbow-mode
-  :ensure t)
-(use-package eink-theme
-  :ensure t)
-
-;; key bindings
-(global-set-key (kbd "<escape>") #'god-mode-all)
-(define-key god-local-mode-map (kbd ".") #'repeat)
-(global-set-key (kbd "C-x C-1") #'delete-other-windows)
-(global-set-key (kbd "C-x C-2") #'split-window-below)
-(global-set-key (kbd "C-x C-3") #'split-window-right)
-(global-set-key (kbd "C-x C-0") #'delete-window)
-(global-set-key (kbd "C-x C-o") #'other-window)
-(global-set-key (kbd "C-x C-u") #'undo)
-(global-set-key (kbd "C-x C-b") #'switch-to-buffer)
-(global-set-key (kbd "C-c C-q") #'ispell-word) ; for reports!
-
-;; spell checking hunspell
-; install hunspell and add to PATH
-(setq-default ispell-program-name "C:/hunspell/bin/hunspell.exe")
-
-
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(custom-enabled-themes '(professional))
  '(custom-safe-themes
-   '("021321ae56a45794f43b41de09fb2bfca184e196666b7d7ff59ea97ec2114559" default))
- '(display-time-mode t)
+   '("7680e0d0fe93475fcdc514ae4df428245ab30c57114a753701e4fc09a15c949b" default))
  '(package-selected-packages
-   '(evil 2048-game pdf-tools eink-theme rainbow-mode idle-highlight-mode xelb which-key use-package org god-mode flylisp darkroom auctex)))
+   '(ergoemacs-status ergoemacs-mode zenburn-theme which-key professional-theme monochrome-theme minimal-theme god-mode eink-theme)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :extend nil :stipple nil :background "#fffff8" :foreground "#111111" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 140 :width normal :foundry "outline" :family "Consolas")))))
+ '(default ((t (:inherit nil :extend nil :stipple nil :background "#FFFFDD" :foreground "#000000" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 113 :width normal :family "IBM Plex Mono")))))
