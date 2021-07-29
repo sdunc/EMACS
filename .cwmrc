@@ -1,4 +1,46 @@
-# change default terminal 
-command  term "rxvt-unicode"
+# Stephen's CWM Config .cwmrc
+# Emacs-friendly bindings which use windows key as a wm prefix key
+# Commands mirror those used for Emacs window management
 
-# 
+# change default terminal 
+command term rxvt-unicode
+command shot scrot
+
+# inherit current selected group
+sticky yes
+
+# set border width
+borderwidth 2
+
+# do not draw borders, use as bar?
+ignore xclock
+
+# 4=Windows Key, use for all wm bindings
+bind-key    4-Right  	 window-snap-right
+bind-key    4-1		 window-vmaximize
+bind-key    4-2		 window-hmaximize
+
+
+
+
+#bind M-r        exec
+#bind CM-r       reload
+#bind CM-l       label
+#bind CM-t       "xterm -e \"top -s 0.6\""
+#bind CM-m       menusearch
+#mousebind M-1   window_move
+#mousebind CM-1  window_resize
+
+
+# Border colors
+color activeborder      'Plum'               # Set the color of the active border
+color inactiveborder    'Gray'               # Set the color of the inactive border
+color urgencyborder     'Plum'               # Set the color of the border of a window indicating urgency
+color groupborder       'MediumSeaGreen'               # Set the color of the border while grouping a window
+color ungroupborder     'MediumVioletRed'               # Set the color of the border while ungrouping a window
+
+# Menu colors
+#color font              '#bcbdbc'               # Set menu font color
+#color selfont           '#eeeeec'               # Set font color for selected menu item
+#color menubg            '#000715'               # Set menu background color
+#color menufg            '#215d9c'               # Set menu foreground color
