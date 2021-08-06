@@ -1,46 +1,61 @@
 # Stephen's CWM Config .cwmrc
 # Emacs-friendly bindings which use windows key as a wm prefix key
-# Commands mirror those used for Emacs window management
+# The goal of this configuration is simple and focused workflows. 
 
-# change default terminal 
-command term rxvt-unicode
-command shot scrot
-
-# inherit current selected group
+# New windows will inherit the group membership of the currently displayed group.
+# This allows cwm to simulate virtual desktops.
 sticky yes
 
-# set border width
-borderwidth 2
+# Change default terminal from xterm to rxvt-unicode.
+command	 term 	 xterm
+command	 lock	 "xscreensaver-command -activate" 
 
-# do not draw borders, use as bar?
+# Define the number of pixels which a window will move,
+# as well as how many pixels away before it snaps to an edge.
+moveamount 30
+snapdist 11
+
+# Appearance
+borderwidth 2
+color activeborder      '#b2beb5'
+color inactiveborder    '#4d414a'
+color urgencyborder     'Plum'
+color groupborder       'MediumSeaGreen'
+color ungroupborder     'MediumVioletRed'
+
+# Do not interact with xclock so it can be used as a system clock.
 ignore xclock
 
-# 4=Windows Key, use for all wm bindings
-bind-key    4-Right  	 window-snap-right
-bind-key    4-1		 window-vmaximize
-bind-key    4-2		 window-hmaximize
+# Key bindings
+# Use (mod)4 (windows) key for all bindings as this key is not used elsewhere.
+#bind-key      4-Return		terminal			# Spawn a new terminal.
+#bind-key      4-l		lock				# Lock the screen.
+#bind-key      4-z       	window-hide		       	# Hide the current window.
+#bind-key      4-x	       	window-close			# Close the current window.
+bind-key      4-Up      	"amixer -q sset Master 8%+"	# control volume 
+bind-key      4-Down    	"amixer -q sset Master 8%-"	# with the keyboard! 
+#bind-key     4-w       menu-window			# Launch "window search" menu.
+#bind-key     4-e       menu-exec			# Launch "exec program" menu.
+#bind-key     4S-1      group-only-1			# Show only group 1
+#bind-key     4S-2      group-only-2			# ................2
+#bind-key     4S-3      group-only-3			# ................3	
+#bind-key     4S-4      group-only-4			# ................4.
+#bind-key     4-1       group-toggle-1			# Show toggle group 1
+#bind-key     4-2       group-toggle-2			# ................2
+#bind-key     4-3       group-toggle-3			# ................3	
+#bind-key     4-4       group-toggle-4			# ................4.
+#bind-key     4-Right   group-cycle			# Cycle through groups.
+#bind-key     4-Left    group-rcycle			# Reverse cycle through groups.
+#bind-key     4M-1      window-movetogroup-1		# Move current window to group 1
+#bind-key     4M-2      window-movetogroup-2		# .............................2
+#bind-key     4M-3      window-movetogroup-3		# .............................3
+#bind-key     4M-4      window-movetogroup-4		# .............................4.
+#bind-key     M-Tab     window-cycle-ingroup		# Cycle between windows in current group.
+#bind-key     4-z       window-hide			# Hide the current window.
+#bind-key     4-x       window-close			# Close the current window.
 
-
-
-
-#bind M-r        exec
-#bind CM-r       reload
-#bind CM-l       label
-#bind CM-t       "xterm -e \"top -s 0.6\""
-#bind CM-m       menusearch
-#mousebind M-1   window_move
-#mousebind CM-1  window_resize
-
-
-# Border colors
-color activeborder      'Plum'               # Set the color of the active border
-color inactiveborder    'Gray'               # Set the color of the inactive border
-color urgencyborder     'Plum'               # Set the color of the border of a window indicating urgency
-color groupborder       'MediumSeaGreen'               # Set the color of the border while grouping a window
-color ungroupborder     'MediumVioletRed'               # Set the color of the border while ungrouping a window
-
-# Menu colors
-#color font              '#bcbdbc'               # Set menu font color
-#color selfont           '#eeeeec'               # Set font color for selected menu item
-#color menubg            '#000715'               # Set menu background color
-#color menufg            '#215d9c'               # Set menu foreground color
+# Define a gap of pixels at the top of the screen so the bar remains visible.
+# gap top bottom left right (in px)
+#gap 24 0 0 0
+# Define the percent size of the master region if htile is called
+#htile 60
