@@ -1,5 +1,17 @@
-;; Stephen Duncanson
-;; GNU Emacs Configuration
+;; Stephen Duncanson's GNU Emacs config
+
+;; wishlist
+;; Better UnDO!!!
+;; actual man pages for things that I need to look up like pthreads
+;; version control with VC + keys to commit, diff, etc C-x v =
+;; easy help with man and improve at finding help within emacs
+;; better integration with gcc and gdb compiler and debugger
+;; minor mode for modal editing
+;; buffer movement?
+;; color theme?
+;; email with notmuch
+;; web with eww?
+;; static website generation 
 
 (cond ((display-graphic-p)
        ;; Graphical code goes here.
@@ -19,6 +31,10 @@
        ;; MacOS-specific code goes here.
        ;;(setq python-shell-interpreter "/usr/local/bin/python3")
        ))
+
+(global-set-key (kbd "C-c c") #'compile)
+(define-minor-mode invoke-mode
+  "Minor mode for modal editing")
 
 ; Enable line numbers when doing any programming
 (add-hook 'prog-mode-hook #'display-line-numbers-mode)
@@ -48,8 +64,6 @@
 (define-key god-local-mode-map (kbd "[") #'backward-paragraph)
 (define-key god-local-mode-map (kbd "]") #'forward-paragraph)
 
-
-
 ;;; Put Emacs auto-save and backup files to /tmp/ or C:/Temp/
 (defconst emacs-tmp-dir (expand-file-name (format "emacs%d" (user-uid)) temporary-file-directory))
 (setq
@@ -61,15 +75,6 @@
    auto-save-list-file-prefix emacs-tmp-dir
    auto-save-file-name-transforms `((".*" ,emacs-tmp-dir t))  ; Change autosave dir to tmp
    backup-directory-alist `((".*" . ,emacs-tmp-dir)))
-
-(defun srd-open-line ()
-  "opens a line and indents the line below"
-  (interactive)
-  (open-line 1)
-  (forward-line 1)
-  (indent-relative)
-  (beginning-of-line)
-  (backward-char 1))
   
 (defun srd-god-mode-color-indicator ()
   "Toggles the color of the cursor and modeline to reflect whether god-mode is active."
